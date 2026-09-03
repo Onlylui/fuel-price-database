@@ -1,0 +1,9 @@
+data/bronze/*
+data/silver/*
+data/gold/*
+!data/**/.gitkeep
+__pycache__/
+.venv/
+.pytest_cache/
+.env
+.vscode/
