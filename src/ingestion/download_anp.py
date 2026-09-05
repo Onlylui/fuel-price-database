@@ -33,7 +33,7 @@ def validate_download(path: Path) -> None:
             return
         #verifica se o conteúdo do ZIP contem arquivo CSV.
         zip_file_content = zip_file.namelist()
-        csv_files = [item for item in zip_file_content if file.lower().endswith(".csv")]
+        csv_files = [item for item in zip_file_content if item.lower().endswith(".csv")]
 
         if not csv_files:
             print("Nenhum arquivo .csv encontrado.")
