@@ -2,6 +2,7 @@ from pathlib import Path
 import polars as pl
 
 bronze_dir = Path("data/bronze/anp")
+OUTPUT = Path("data/silver/anp/fuel_prices_2026_01.parquet")
 
 csv_archive = list(bronze_dir.glob("*.csv"))
 
@@ -35,6 +36,10 @@ silver_df = (
     .rename(COLUMN_NAMES)
     .with_columns(
         pl.col("data_da_coleta").str.strptime(pl.Date,"%d/%m/%Y"),
-        pl.col("valor_de_venda").str.replace(",",".").cast(pl.Decimal(10,3))
+        pl.col("valor_de_venda").str.replace(",",".").cast(pl.Decimal(10,3)),
+        pl.col("valor_de_compra").str.replace(",",".").cast(pl.Decimal(10,3))
                   )
     )
+
+OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+silver_df.write_parquet(OUTPUT)
