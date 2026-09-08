@@ -17,7 +17,7 @@ def download_anp_data() -> None:
     print("Arquivo baixado com sucesso!")
 
 
-def validate_download(path: Path):
+def validate_download(path: Path) -> list[str] | None:
     #verifica se é um zip válido.
     if not is_zipfile(path):
         print("Arquivo não é um ZIP")
