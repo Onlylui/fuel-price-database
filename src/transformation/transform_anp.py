@@ -31,6 +31,8 @@ COLUMN_NAMES = {
 }
 
 
+
+
 silver_df = (
     raw_df
     .rename(COLUMN_NAMES)
@@ -40,6 +42,15 @@ silver_df = (
         pl.col("valor_de_compra").str.replace(",",".").cast(pl.Decimal(10,3))
                   )
     )
+
+
+duplicated_keys = (
+    silver_df
+    .group_by(["cnpj_da_revenda", "produto", "data_da_coleta"])
+    .len()
+    .filter(pl.col("len") > 1)
+)
+
 
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 silver_df.write_parquet(OUTPUT)
