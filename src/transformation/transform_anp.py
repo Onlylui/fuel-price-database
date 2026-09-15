@@ -51,6 +51,11 @@ duplicated_keys = (
     .filter(pl.col("len") > 1)
 )
 
+metrics = duplicated_keys.select(
+    pl.len().alias("grupos_suspeitos"),
+    pl.col("len").sum().alias("linhas_nos_grupos"),
+    pl.col("len").max().alias("maior_grupo"),
+)
 
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 silver_df.write_parquet(OUTPUT)
