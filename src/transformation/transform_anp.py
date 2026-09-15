@@ -30,13 +30,6 @@ COLUMN_NAMES = {
     "Bandeira": "bandeira",
 }
 
-DUPLICATE_KEY_COLUMNS = [
-    "cnpj_da_revenda",
-    "produto",
-    "data_da_coleta",
-]
-
-
 silver_df = (
     raw_df
     .rename(COLUMN_NAMES)
