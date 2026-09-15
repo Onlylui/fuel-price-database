@@ -30,7 +30,11 @@ COLUMN_NAMES = {
     "Bandeira": "bandeira",
 }
 
-
+DUPLICATE_KEY_COLUMNS = [
+    "cnpj_da_revenda",
+    "produto",
+    "data_da_coleta",
+]
 
 
 silver_df = (
@@ -43,19 +47,14 @@ silver_df = (
                   )
     )
 
-
-duplicated_keys = (
-    silver_df
-    .group_by(["cnpj_da_revenda", "produto", "data_da_coleta"])
-    .len()
-    .filter(pl.col("len") > 1)
+clean_silver_df = silver_df.unique(
+    maintain_order=True
 )
 
-metrics = duplicated_keys.select(
-    pl.len().alias("grupos_suspeitos"),
-    pl.col("len").sum().alias("linhas_nos_grupos"),
-    pl.col("len").max().alias("maior_grupo"),
-)
+removed_rows = silver_df.height - clean_silver_df.height
+
+print(f"Linhas removidas: {removed_rows}")
+print(f"Linhas finais: {clean_silver_df.height}")
 
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-silver_df.write_parquet(OUTPUT)
+clean_silver_df.write_parquet(OUTPUT)
