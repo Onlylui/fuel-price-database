@@ -1,15 +1,19 @@
 from pathlib import Path
 import polars as pl
 
-bronze_dir = Path("data/bronze/anp")
 OUTPUT = Path("data/silver/anp/fuel_prices_2026_01.parquet")
+BRONZE_DIR = Path("data/bronze/anp")
 
-csv_archive = list(bronze_dir.glob("*.csv"))
+def find_csv(dir: Path) -> Path:
+    csv_files = list(dir.glob("*.csv"))
 
-raw_df = pl.read_csv(
-    csv_archive[0],
-    separator = ";"
-    )
+    if len(csv_files) == 0:
+        raise FileNotFoundError("Nenhum  arquivo encontrado")
+
+    if len(csv_files) > 1:
+        raise RuntimeError("Mais de um arquivo informado para operação")
+
+    return csv_files[0]
 
 COLUMN_NAMES = {
     "Regiao - Sigla": "regiao_sigla",
@@ -29,6 +33,13 @@ COLUMN_NAMES = {
     "Unidade de Medida": "unidade_de_medida",
     "Bandeira": "bandeira",
 }
+
+csv_path = find_csv(BRONZE_DIR)
+
+raw_df = pl.read_csv(
+    csv_path,
+    separator=";",
+)
 
 silver_df = (
     raw_df
