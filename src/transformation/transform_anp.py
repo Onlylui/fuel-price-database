@@ -2,7 +2,7 @@ from pathlib import Path
 import polars as pl
 
 OUTPUT = Path("data/silver/anp/fuel_prices_2026_01.parquet")
-BRONZE_DIR = Path("data/bronze/anp")
+BRONZE_DIR = Path("data/bronze/anp/csv")
 
 def find_csv(dir: Path) -> Path:
     csv_files = list(dir.glob("*.csv"))
