@@ -1,5 +1,6 @@
 from pathlib import Path
 import polars as pl
+import polars.selectors as cs
 
 OUTPUT = Path("data/silver/anp/fuel_prices_2026_01.parquet")
 BRONZE_DIR = Path("data/bronze/anp/csv")
@@ -51,8 +52,15 @@ silver_df = (
                   )
     )
 
-clean_silver_df = silver_df.unique(
-    maintain_order=True
+clean_silver_df = (
+    silver_df
+    .with_columns(
+        cs.string()                                 # todas as colunas String
+        .str.replace_all(r"[\s\u200B]+", " ")       # colapsa espaços, tabs, NBSP
+        .str.strip_chars()                          # remove bordas
+        .replace("", None)                          # vazio vira null
+    )
+    .unique(maintain_order=True)                    # retira resgistros duplicados                  
 )
 
 removed_rows = silver_df.height - clean_silver_df.height
