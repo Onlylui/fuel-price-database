@@ -5,17 +5,6 @@ import polars.selectors as cs
 OUTPUT = Path("data/silver/anp/fuel_prices_2026_01.parquet")
 BRONZE_DIR = Path("data/bronze/anp/csv")
 
-def find_csv(dir: Path) -> Path:
-    csv_files = list(dir.glob("*.csv"))
-
-    if len(csv_files) == 0:
-        raise FileNotFoundError("Nenhum  arquivo encontrado")
-
-    if len(csv_files) > 1:
-        raise RuntimeError("Mais de um arquivo informado para operação")
-
-    return csv_files[0]
-
 COLUMN_NAMES = {
     "Regiao - Sigla": "regiao_sigla",
     "Estado - Sigla": "estado_sigla",
@@ -35,14 +24,18 @@ COLUMN_NAMES = {
     "Bandeira": "bandeira",
 }
 
-csv_path = find_csv(BRONZE_DIR)
+def find_csv(dir: Path) -> Path:
+    csv_files = list(dir.glob("*.csv"))
 
-raw_df = pl.read_csv(
-    csv_path,
-    separator=";",
-)
+    if len(csv_files) == 0:
+        raise FileNotFoundError("Nenhum  arquivo encontrado")
 
-def transform_silver_df(df):
+    if len(csv_files) > 1:
+        raise RuntimeError("Mais de um arquivo informado para operação")
+
+    return csv_files[0]
+
+def transform_silver_df(df: pl.DataFrame) -> pl.DataFrame:
     silver_df = (
         df
         .rename(COLUMN_NAMES)
@@ -54,9 +47,7 @@ def transform_silver_df(df):
         )
     return silver_df
 
-silver_df = transform_silver_df(raw_df)
-
-def clear_silver_df(df):
+def clear_silver_df(df: pl.DataFrame) -> pl.DataFrame:
     clean_silver_df = (
         df
         .with_columns(
@@ -69,12 +60,24 @@ def clear_silver_df(df):
     )
     return clean_silver_df
 
-clean_silver_df = clear_silver_df(silver_df)
+def main():
+    csv_path = find_csv(BRONZE_DIR)
 
-removed_rows = silver_df.height - clean_silver_df.height
+    raw_df = pl.read_csv(
+        csv_path,
+        separator=";",
+    )
 
-print(f"Linhas removidas: {removed_rows}")
-print(f"Linhas finais: {clean_silver_df.height}")
+    silver_df = transform_silver_df(raw_df)
+    clean_silver_df = clear_silver_df(silver_df)
 
-OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-clean_silver_df.write_parquet(OUTPUT)
+    removed_rows = silver_df.height - clean_silver_df.height
+
+    print(f"Linhas removidas: {removed_rows}")
+    print(f"Linhas finais: {clean_silver_df.height}")
+
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    clean_silver_df.write_parquet(OUTPUT)
+
+if __name__ == "__main__":
+    main()
