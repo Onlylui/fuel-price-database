@@ -2,7 +2,7 @@ from pathlib import Path
 import polars as pl
 import polars.selectors as cs
 
-OUTPUT = Path("data/silver/anp/fuel_prices_2026_01.parquet")
+OUTPUT = Path("data/silver/anp/silver_fuel_prices_2026_01.parquet")
 BRONZE_DIR = Path("data/bronze/anp/csv")
 
 COLUMN_NAMES = {
