@@ -1,7 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
 from sqlalchemy import Date
-from sqlalchemy import Date
 from sqlalchemy import Numeric
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase
@@ -19,9 +18,9 @@ class AnpData(Base):
     municipio:      Mapped[str]         = mapped_column(String(255))
     revenda:        Mapped[str]         = mapped_column(String(255))
     cnpj_revenda:   Mapped[str]         = mapped_column(String(18))
-    nome_rua:       Mapped[str | None]  = mapped_column(String(255))
-    numero_rua:     Mapped[str | None]  = mapped_column(String(50))
-    complemento:    Mapped[str | None]  = mapped_column(String(255))
+    nome_rua:       Mapped[str | None]  = mapped_column(String(255), nullable=True)
+    numero_rua:     Mapped[str | None]  = mapped_column(String(50),  nullable=True)
+    complemento:    Mapped[str | None]  = mapped_column(String(255), nullable=True)
     bairro:         Mapped[str | None]  = mapped_column(String(255), nullable=True)
     cep:            Mapped[str]         = mapped_column(String(8))
     produto:        Mapped[str]         = mapped_column(String(50))
