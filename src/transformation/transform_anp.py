@@ -10,17 +10,17 @@ COLUMN_NAMES = {
     "Estado - Sigla": "estado_sigla",
     "Municipio": "municipio",
     "Revenda": "revenda",
-    "CNPJ da Revenda": "cnpj_da_revenda",
-    "Nome da Rua": "nome_da_rua",
-    "Numero Rua": "numero_da_rua",
+    "CNPJ da Revenda": "cnpj_revenda",
+    "Nome da Rua": "nome_rua",
+    "Numero Rua": "numero_rua",
     "Complemento": "complemento",
     "Bairro": "bairro",
     "Cep": "cep",
     "Produto": "produto",
-    "Data da Coleta": "data_da_coleta",
-    "Valor de Venda": "valor_de_venda",
-    "Valor de Compra": "valor_de_compra",
-    "Unidade de Medida": "unidade_de_medida",
+    "Data da Coleta": "data_coleta",
+    "Valor de Venda": "valor_venda",
+    "Valor de Compra": "valor_compra",
+    "Unidade de Medida": "unidade_medida",
     "Bandeira": "bandeira",
 }
 
@@ -40,9 +40,9 @@ def transform_silver_df(df: pl.DataFrame) -> pl.DataFrame:
         df
         .rename(COLUMN_NAMES)
         .with_columns(
-            pl.col("data_da_coleta").str.strptime(pl.Date,"%d/%m/%Y"),
-            pl.col("valor_de_venda").str.replace(",",".").cast(pl.Decimal(10,3)),
-            pl.col("valor_de_compra").str.replace(",",".").cast(pl.Decimal(10,3))
+            pl.col("data_coleta").str.strptime(pl.Date,"%d/%m/%Y"),
+            pl.col("valor_venda").str.replace(",",".").cast(pl.Decimal(10,3)),
+            pl.col("valor_compra").str.replace(",",".").cast(pl.Decimal(10,3))
                       )
         )
     return silver_df
