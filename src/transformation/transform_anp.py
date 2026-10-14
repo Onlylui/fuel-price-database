@@ -41,8 +41,8 @@ def transform_silver_df(df: pl.DataFrame) -> pl.DataFrame:
         .rename(COLUMN_NAMES)
         .with_columns(
             pl.col("data_coleta").str.strptime(pl.Date,"%d/%m/%Y"),
-            pl.col("valor_venda").str.replace(",",".").cast(pl.Decimal(10,3)),
-            pl.col("valor_compra").str.replace(",",".").cast(pl.Decimal(10,3))
+            pl.col("valor_venda").str.replace(",",".").cast(pl.Decimal(10,2)),
+            pl.col("valor_compra").str.replace(",",".").cast(pl.Decimal(10,2))
                       )
         )
     return silver_df
