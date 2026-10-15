@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from decimal import Decimal
 from sqlalchemy import Date
 from sqlalchemy import Numeric
@@ -24,7 +24,7 @@ class AnpData(Base):
     bairro:         Mapped[str | None]      = mapped_column(String(255), nullable=True)
     cep:            Mapped[str]             = mapped_column(String(8))
     produto:        Mapped[str]             = mapped_column(String(50))
-    data_coleta:    Mapped[Date]            = mapped_column(Date)
+    data_coleta:    Mapped[date]            = mapped_column(Date)
     valor_venda:    Mapped[Decimal | None]  = mapped_column(Numeric(precision=10,scale=2),nullable=True)
     valor_compra:   Mapped[Decimal | None]  = mapped_column(Numeric(precision=10,scale=2),nullable=True)
     unidade_medida: Mapped[str]             = mapped_column(String(50))

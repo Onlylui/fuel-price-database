@@ -60,6 +60,17 @@ def clear_silver_df(df: pl.DataFrame) -> pl.DataFrame:
     )
     return clean_silver_df
 
+def clean_doc_fields(df:pl.DataFrame)-> pl.DataFrame:
+    return df.with_columns(
+        pl.col("cnpj_revenda")
+        .str.replace_all(r"[^A-Za-z0-9]", "")           # mantém só letras e números
+        .str.to_uppercase(),                            # CNPJ alfanumérico usa maiúsculas
+        pl.col("cep")
+        .str.replace_all(r"\D", "")                     # mantém só dígitos
+    )
+
+
+
 def main():
     csv_path = find_csv(BRONZE_DIR)
 
