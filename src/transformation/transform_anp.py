@@ -69,6 +69,23 @@ def clean_doc_fields(df:pl.DataFrame)-> pl.DataFrame:
         .str.replace_all(r"\D", "")                     # mantém só dígitos
     )
 
+def validate_docs(unvalited_df:pl.DataFrame)-> tuple[pl.DataFrame,pl.DataFrame]:
+    cleaned_doc = clean_doc_fields(unvalited_df)
+    cnpj_ok = (
+                pl.col("cnpj_revenda").is_not_null()
+                &
+                (pl.col("cnpj_revenda").str.len_chars() == 14) 
+                & 
+                (pl.col("cnpj_revenda").str.contains(r"\d{2}$")))
+    cep_ok = (
+                pl.col("cep").is_not_null()
+                &
+                (pl.col("cep").str.len_chars() == 8)
+    )
+    validated_docs = cleaned_doc.filter(cnpj_ok & cep_ok)
+    rejected_docs = cleaned_doc.filter(~cnpj_ok | ~cep_ok)
+    return validated_docs, rejected_docs
+     
 
 
 def main():
