@@ -3,6 +3,7 @@ import polars as pl
 import polars.selectors as cs
 
 OUTPUT = Path("data/silver/anp/silver_fuel_prices_2026_01.parquet")
+REJECTED_OUTPUT = Path("data/silver/anp/rejected_data/rejected.csv")
 BRONZE_DIR = Path("data/bronze/anp/csv")
 
 COLUMN_NAMES = {
@@ -97,7 +98,12 @@ def main():
     )
 
     silver_df = transform_silver_df(raw_df)
+
     clean_silver_df = clear_silver_df(silver_df)
+
+    check_docs_fields = clean_doc_fields(clean_silver_df)
+
+    validated_docs = validate_docs(check_docs_fields)
 
     removed_rows = silver_df.height - clean_silver_df.height
 
@@ -105,7 +111,8 @@ def main():
     print(f"Linhas finais: {clean_silver_df.height}")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    clean_silver_df.write_parquet(OUTPUT)
+    validated_docs[0].write_parquet(OUTPUT)
+    validated_docs[1].write_csv(REJECTED_OUTPUT)
 
 if __name__ == "__main__":
     main()
