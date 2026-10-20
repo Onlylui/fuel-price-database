@@ -71,7 +71,6 @@ def clean_doc_fields(df:pl.DataFrame)-> pl.DataFrame:
     )
 
 def validate_docs(unvalited_df:pl.DataFrame)-> tuple[pl.DataFrame,pl.DataFrame]:
-    cleaned_doc = clean_doc_fields(unvalited_df)
     cnpj_ok = (
                 pl.col("cnpj_revenda").is_not_null()
                 &
@@ -83,8 +82,8 @@ def validate_docs(unvalited_df:pl.DataFrame)-> tuple[pl.DataFrame,pl.DataFrame]:
                 &
                 (pl.col("cep").str.len_chars() == 8)
     )
-    validated_docs = cleaned_doc.filter(cnpj_ok & cep_ok)
-    rejected_docs = cleaned_doc.filter(~cnpj_ok | ~cep_ok)
+    validated_docs = unvalited_df.filter(cnpj_ok & cep_ok)
+    rejected_docs = unvalited_df.filter(~cnpj_ok | ~cep_ok)
     return validated_docs, rejected_docs
      
 
@@ -108,7 +107,8 @@ def main():
     removed_rows = silver_df.height - clean_silver_df.height
 
     print(f"Linhas removidas: {removed_rows}")
-    print(f"Linhas finais: {clean_silver_df.height}")
+    print(f"Linhas finais: {validated_docs[0].height}")
+    print(f"Linhas com documentos rejeitados: {validated_docs[1].height}")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     validated_docs[0].write_parquet(OUTPUT)
