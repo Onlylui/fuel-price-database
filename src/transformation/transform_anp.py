@@ -111,6 +111,7 @@ def main():
     print(f"Linhas com documentos rejeitados: {validated_docs[1].height}")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    REJECTED_OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     validated_docs[0].write_parquet(OUTPUT)
     validated_docs[1].write_csv(REJECTED_OUTPUT)
 
