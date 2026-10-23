@@ -15,7 +15,6 @@ fuel-price-database/
 │   └── gold/         # tabelas analíticas
 ├── src/
 │   └── ingestion/    # código para obter e salvar a fonte
-├── tests/
 ├── docs/             # decisões, dicionário de dados e diagramas
 ├── README.md
 └── .gitignore
@@ -24,3 +23,7 @@ fuel-price-database/
 
 ## Primeira entrega
 O pipeline deve baixar um CSV e o guarda em data/bronze/ sem alterar seu conteúdo.
+
+## Escopo da primeira versão
+- PostgreSQL instalado localmente, sem Docker.
+- Sem testes automatizados; a verificação é feita executando o pipeline e conferindo as contagens de linhas e os arquivos gerados.
