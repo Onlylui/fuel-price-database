@@ -4,6 +4,7 @@ data/gold/*
 !data/**/.gitkeep
 __pycache__/
 .venv/
+venv/
 .pytest_cache/
 .env
 .vscode/

@@ -25,5 +25,21 @@ fuel-price-database/
 O pipeline deve baixar um CSV e o guarda em data/bronze/ sem alterar seu conteúdo.
 
 ## Escopo da primeira versão
-- PostgreSQL instalado localmente, sem Docker.
+- PostgreSQL e pipeline executados via Docker Compose.
 - Sem testes automatizados; a verificação é feita executando o pipeline e conferindo as contagens de linhas e os arquivos gerados.
+
+
+## Executando com Docker
+Pré-requisitos: Docker e Docker Compose.
+
+```bash
+cp .env.example .env        # ajuste as credenciais
+docker compose build
+docker compose up -d db     # sobe o PostgreSQL (porta 5433 no host)
+
+docker compose run --rm app python src/ingestion/download_anp.py
+docker compose run --rm app python src/transformation/transform_anp.py
+```
+
+A pasta `data/` é montada no container, então os arquivos gerados ficam disponíveis no host.
+Para derrubar o banco: `docker compose down` (adicione `-v` para apagar também os dados).
