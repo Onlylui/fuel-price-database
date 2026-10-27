@@ -29,6 +29,7 @@ class AnpData(Base):
     valor_compra:   Mapped[Decimal | None]  = mapped_column(Numeric(precision=10,scale=2),nullable=True)
     unidade_medida: Mapped[str]             = mapped_column(String(50))
     bandeira:       Mapped[str]             = mapped_column(String(50))
+    periodo:        Mapped[str]             = mapped_column(String(7), index=True)  # semestre da ANP, ex.: "2026-S1"
 
 
 
