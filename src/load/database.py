@@ -1,5 +1,6 @@
 import os
 
+from dotenv import load_dotenv
 from sqlalchemy import Engine
 from sqlalchemy import create_engine
 
@@ -7,6 +8,8 @@ from load.models import Base
 
 
 def get_engine() -> Engine:
+    # lê o .env local, sem sobrescrever variáveis já definidas.
+    load_dotenv()
     database_url = os.environ.get("DATABASE_URL")
 
     if not database_url:
