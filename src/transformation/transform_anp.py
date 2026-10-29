@@ -2,10 +2,14 @@ from pathlib import Path
 import polars as pl
 import polars.selectors as cs
 
-OUTPUT = Path("data/silver/anp/silver_fuel_prices_2026_01.parquet")
-REJECTED_OUTPUT = Path("data/silver/anp/rejected_data/rejected.csv")
-BRONZE_DIR = Path("data/bronze/anp/csv")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]      # src/transformation/transform_anp.py -> raiz do projeto
+DATA_DIR = PROJECT_ROOT / "data"
 PERIODO = "2026-S1"                                     # semestre do arquivo ca-2026-01 da ANP
+
+BRONZE_DIR = DATA_DIR / "bronze" / "anp" / "csv"
+SILVER_DIR = DATA_DIR / "silver" / "anp"
+OUTPUT = SILVER_DIR / f"silver_fuel_prices_{PERIODO}.parquet"
+REJECTED_OUTPUT = SILVER_DIR / "rejected_data" / f"rejected_{PERIODO}.csv"
 
 COLUMN_NAMES = {
     "Regiao - Sigla": "regiao_sigla",
