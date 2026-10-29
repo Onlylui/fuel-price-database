@@ -5,6 +5,7 @@ import polars.selectors as cs
 OUTPUT = Path("data/silver/anp/silver_fuel_prices_2026_01.parquet")
 REJECTED_OUTPUT = Path("data/silver/anp/rejected_data/rejected.csv")
 BRONZE_DIR = Path("data/bronze/anp/csv")
+PERIODO = "2026-S1"                                     # semestre do arquivo ca-2026-01 da ANP
 
 COLUMN_NAMES = {
     "Regiao - Sigla": "regiao_sigla",
@@ -85,7 +86,11 @@ def validate_docs(unvalited_df:pl.DataFrame)-> tuple[pl.DataFrame,pl.DataFrame]:
     validated_docs = unvalited_df.filter(cnpj_ok & cep_ok)
     rejected_docs = unvalited_df.filter(~cnpj_ok | ~cep_ok)
     return validated_docs, rejected_docs
-     
+
+def add_periodo(df: pl.DataFrame, periodo: str) -> pl.DataFrame:
+    # identifica o período de origem, usado no DELETE antes de recarregar.
+    return df.with_columns(pl.lit(periodo).alias("periodo"))
+
 
 
 def main():
@@ -102,7 +107,9 @@ def main():
 
     check_docs_fields = clean_doc_fields(clean_silver_df)
 
-    validated_docs = validate_docs(check_docs_fields)
+    periodo_df = add_periodo(check_docs_fields, PERIODO)
+
+    validated_docs = validate_docs(periodo_df)
 
     removed_rows = silver_df.height - clean_silver_df.height
 
